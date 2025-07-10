@@ -22,9 +22,9 @@
                 <div class="col-lg-6">
                 <ul class="crumb">
                     <li><a href="{{ url('/') }}">{{ Translator::translate('Home', $locale, 'id') }}</a></li>
-                    <li class="active">{{ Translator::translate('Profile', $locale, 'id') }}</li>
+                    <li class="active">{{ Translator::translate('Profil', $locale, 'id') }}</li>
                 </ul>
-                <h1 class="text-uppercase">{{ Translator::translate('Profile', $locale, 'id') }}</h1>
+                <h1 class="text-uppercase">{{ Translator::translate('Profil', $locale, 'id') }}</h1>
                 <p class="col-lg-10 lead">
                     {{ Translator::translate('Temukan berbagai profile penelitian kami yang inovasi dan terpecaya.', $locale, 'id') }}
                 </p>
