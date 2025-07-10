@@ -13,6 +13,23 @@
         background-repeat: no-repeat;
         height: 100vh;
     }
+    .responsive-video {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 ratio */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  background: #000;
+}
+
+.responsive-video iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 </style>
 @endsection
 @section('content')
@@ -292,16 +309,19 @@ $videos = DB::table('profiles')->where('key', 'video')->get();
             @endphp
 
             @if ($videoId)
-            <div class="col-lg-6 text-center">
-                <iframe width="680" height="500"
-                    src="https://www.youtube.com/embed/{{ $videoId }}"
-                    title="{{ $video->title }}"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen>
-                </iframe>
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="responsive-video mx-auto">
+                    <iframe
+                        src="https://www.youtube.com/embed/{{ $videoId }}"
+                        title="{{ $video->title }}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen>
+                    </iframe>
+                </div>
             </div>
+
             @endif
             @endforeach
         </div>
