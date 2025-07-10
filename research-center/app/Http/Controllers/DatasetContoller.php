@@ -143,8 +143,8 @@ public function view($id)
                 'researcher_id' => 'required|integer',
                 'year' => 'required|integer',
                 'doi' => 'required|string',
-                'file_paths.*' => 'nullable|file|max:50120',
-                'preview_path' => 'nullable|file|max:50120',
+                'file_paths.*' => 'nullable|file|max:10485760',
+                'preview_path' => 'nullable|file|max:10485760',
             ]);
 
             // Ambil nama kategori
@@ -216,8 +216,8 @@ public function view($id)
             'researcher_id' => 'required|integer',
             'year' => 'required|integer',
             'doi' => 'required|string',
-            'file_paths.*' => 'nullable|file|max:50120',
-            'preview_path' => 'nullable|file|max:50120',
+            'file_paths.*' => 'nullable|file|max:10485760',
+            'preview_path' => 'nullable|file|max:10485760',
 
         ]);
 

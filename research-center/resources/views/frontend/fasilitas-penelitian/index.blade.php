@@ -57,7 +57,7 @@
                                 <img src="{{ asset('images/logo-icon.webp') }}" class="abs abs-centered w-20" alt="">
                                 <div class="abs bg-color z-2 top-0 w-100 h-100 hover-op-1"></div>
                                 <div class="abs z-2 bottom-0 mb-3 w-100 text-center hover-op-0">
-                                    <h4 class="mb-3">{{ strtoupper($item->name) }}</h4>
+                                    <h4 class="mb-3">{{ Translator::translate (strtoupper($item->name), $locale, 'id') }}</h4>
                                 </div>
                                 <div class="gradient-trans-color-bottom abs w-100 h-40 bottom-0 Z-1"></div>
                             </div>

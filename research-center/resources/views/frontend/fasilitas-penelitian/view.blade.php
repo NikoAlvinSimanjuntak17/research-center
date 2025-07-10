@@ -38,11 +38,11 @@
                 <div class="col-lg-8">
                     <div class="row align-items-center">
                         <div class="col-12">
-                            <h2 class="mb-3">{{ $facility->name }}</h2>
+                            <h2 class="mb-3">{{ Translator::translate($facility->name, $locale, 'id') }}</h2>
                             <img src="{{ asset('storage/' . $facility->image) }}" class="img-fluid rounded-3 shadow mb-4" alt="">
-                            <p>{!! $facility->description !!}</p>
+                            <p>{!!Translator::translate( $facility->description, $locale, 'id') !!}</p>
                             <a href="{{ route('frontend-fasilitas.index') }}" class="btn-main mt-4 d-inline-block">
-                                ← Kembali ke Daftar Fasilitas
+                                <i class="ph ph-arrow-circle-left"></i>        {{ Translator::translate('Kembali ke Fasilitas', $locale, 'id') }}
                             </a>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                 <!-- Sidebar fasilitas lainnya -->
                 <div class="col-lg-3 ms-lg-5 mt-5 mt-lg-0">
                     <div class="widget">
-                        <h3 class="widget-title">Fasilitas Lainnya</h3>
+                        <h3 class="widget-title">{{ Translator::translate('Fasilitas Lainnya', $locale, 'id') }}</h3>
                         <div class="row g-3">
                             @foreach ($fasilitas_lain as $item)
                                 @if ($item->id !== $facility->id)
@@ -65,12 +65,12 @@
                                                 <div class="abs w-100 px-2 hover-op-1 z-4 hover-mt-40 abs-centered">
                                                     <a class="btn-line btn-sm"
                                                         href="{{ route('frontend-fasilitas.view', $item->id) }}">
-                                                        Lihat Detail
+                                                        {{ Translator::translate('Lihat Detail', $locale, 'id') }}
                                                     </a>
                                                 </div>
 
                                                 <div class="abs z-2 bottom-0 mb-2 w-100 text-center hover-op-0">
-                                                    <h6 class="mb-2 px-2">{{ strtoupper($item->name) }}</h6>
+                                                    <h6 class="mb-2 px-2">{{ Translator::translate(strtoupper($item->name), $locale, 'id') }}</h6>
                                                 </div>
 
                                                 <div class="abs bg-color z-2 top-0 w-100 h-100 hover-op-1"></div>

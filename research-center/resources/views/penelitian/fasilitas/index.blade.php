@@ -34,7 +34,7 @@
                                     <td>{{ Str::limit(strip_tags($facility->description), 50) }}</td>
                                     <td>
                                         @if($facility->image)
-                                            <img src="{{ asset('storage' . $facility->image) }}" class="img-thumbnail" style="max-width: 100px;">
+                                            <img src="{{ asset('storage/' . $facility->image) }}" class="img-thumbnail" style="max-width: 100px;">
                                         @else
                                             <span class="text-muted">Tidak ada gambar</span>
                                         @endif

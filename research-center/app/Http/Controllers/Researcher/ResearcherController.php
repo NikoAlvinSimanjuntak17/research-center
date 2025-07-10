@@ -9,7 +9,7 @@ use App\Models\Department;
 use App\Models\Institution;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Str;
 class ResearcherController extends Controller
 {
     public function __construct()
@@ -56,57 +56,69 @@ class ResearcherController extends Controller
         return view('researcher.editprofile', compact('user', 'researcher', 'institutions', 'departments'));
     }
 
-    public function updateProfile(Request $request)
-    {
-        $user = $this->ensureResearcher();
+public function updateProfile(Request $request)
+{
+    $user = $this->ensureResearcher();
 
-        $validated = $request->validate([
-            'orcid_id' => 'nullable|string|max:255',
-            'scopus_id' => 'nullable|string|max:255',
-            'garuda_id' => 'nullable|string|max:255',
-            'googlescholar_id' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'department_id' => 'nullable|exists:departments,id',
-            'nip' => 'nullable|string|max:50',
-            'bachelor_degree' => 'nullable|string|max:255',
-            'master_degree' => 'nullable|string|max:255',
-            'doctor_degree' => 'nullable|string|max:255',
-            'experiences' => 'nullable|string',
-            'citation_count' => 'nullable|integer|min:0',
-            'active' => 'nullable|boolean',
-            'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-        ]);
+    $validated = $request->validate([
+        'orcid_id' => 'nullable|string|max:255',
+        'scopus_id' => 'nullable|string|max:255',
+        'garuda_id' => 'nullable|string|max:255',
+        'googlescholar_id' => 'nullable|string|max:255',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10024',
+        'department_id' => 'nullable|exists:departments,id',
+        'nip' => 'nullable|string|max:50',
+        'bachelor_degree' => 'nullable|string|max:255',
+        'master_degree' => 'nullable|string|max:255',
+        'doctor_degree' => 'nullable|string|max:255',
+        'experiences' => 'nullable|string',
+        'citation_count' => 'nullable|integer|min:0',
+        'active' => 'nullable|boolean',
+        'name' => 'nullable|string|max:255',
+        'email' => 'nullable|email|max:255',
+    ]);
 
-        $researcher = $user->researcher ?? new Researcher(['user_id' => $user->id]);
+    $researcher = $user->researcher ?? new Researcher(['user_id' => $user->id]);
 
-        if ($request->hasFile('image')) {
-            if ($researcher->image) {
-                Storage::disk('public')->delete($researcher->image);
-            }
-            $researcher->image = $request->file('image')->store('researchers', 'public');
+    if ($request->hasFile('image')) {
+        // Hapus gambar lama
+        if ($researcher->image) {
+            Storage::disk('public')->delete($researcher->image);
+            @unlink(public_path('storage/' . $researcher->image));
         }
 
-        $researcher->fill([
-            'orcid_id' => $request->orcid_id,
-            'scopus_id' => $request->scopus_id,
-            'garuda_id' => $request->garuda_id,
-            'googlescholar_id' => $request->googlescholar_id,
-            'department_id' => $request->department_id,
-            'nip' => $request->nip,
-            'bachelor_degree' => $request->bachelor_degree,
-            'master_degree' => $request->master_degree,
-            'doctor_degree' => $request->doctor_degree,
-            'experiences' => $request->experiences,
-            'citation_count' => $request->citation_count,
-            'active' => $request->active ?? true,
-            'name' => $request->name ?? $user->name,
-            'email' => $request->email ?? $user->email,
-            'updated_by' => $user->id,
-        ])->save();
+        $file = $request->file('image');
+        $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
 
-        return redirect()->route('researcher.profile.show')->with('message', 'Profil berhasil diperbarui.');
+        // Simpan ke storage/app/public/researchers
+        $file->storeAs('researchers', $filename, 'public');
+
+        // Salin secara manual ke public/storage/researchers
+        $file->move(public_path('storage/researchers'), $filename);
+
+        $researcher->image = 'researchers/' . $filename;
     }
+
+    $researcher->fill([
+        'orcid_id' => $request->orcid_id,
+        'scopus_id' => $request->scopus_id,
+        'garuda_id' => $request->garuda_id,
+        'googlescholar_id' => $request->googlescholar_id,
+        'department_id' => $request->department_id,
+        'nip' => $request->nip,
+        'bachelor_degree' => $request->bachelor_degree,
+        'master_degree' => $request->master_degree,
+        'doctor_degree' => $request->doctor_degree,
+        'experiences' => $request->experiences,
+        'citation_count' => $request->citation_count,
+        'active' => $request->active ?? true,
+        'name' => $request->name ?? $user->name,
+        'email' => $request->email ?? $user->email,
+        'updated_by' => $user->id,
+    ])->save();
+
+    return redirect()->route('researcher.profile.show')->with('message', 'Profil berhasil diperbarui.');
+}
 
     public function showProfile()
     {

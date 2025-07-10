@@ -22,12 +22,12 @@
                         <li><a href="{{ url('/') }}">Home</a></li>
                         <li class="active">Publikasi</li>
                     </ul>
-                    <h1 class="text-uppercase">Publikasi</h1>
+                    <h1 class="text-uppercase">Publikasi Peneliti</h1>
                     <p class="col-lg-10 lead">Temukan berbagai Publikasi penelitian kami yang inovasi dan terpecaya.</p>
                 </div>
             </div>
         </div>
-        <img src="{{ asset('images/logo-wm.webp') }}" class="abs end-0 bottom-0 z-2 w-20" alt="">
+        <img src="{{ asset('frontend/gardyn/images/logo-wm.webp') }}" class="abs end-0 bottom-0 z-2 w-20" alt="">
         <div class="de-gradient-edge-top dark"></div>
         <div class="de-overlay"></div>
     </section>
@@ -38,7 +38,7 @@
             <div class="row">
                 <div class="col-md-5">
                     <div class="team-details__image wow fadeInLeft" data-wow-delay='500ms'>
-                        <img src="{{ $researcher->image ? asset('storage/' . $researcher->image) : asset('images/team/default.jpg') }}" 
+                        <img src="{{ $researcher->image ? asset('storage/' . $researcher->image) : asset('images/default.jpg') }}" 
                         alt="{{ $researcher->user->name }}" 
                         style="width: 100%; object-fit: cover; aspect-ratio: 370 / 431;">
                     </div>
@@ -98,7 +98,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="sec-title text-center wow fadeInUp" data-wow-duration='700ms'>
-                    <h6 class="sec-title__tagline"><img src="{{ asset('images/shapes/sec-title-s-1.png')}}" class="sec-title__img">Daftar Publikasi</h6>
+                    <h6 class="sec-title__tagline">Daftar Publikasi</h6>
                     <h3 class="sec-title__title">Pilih Sumber Publikasi</h3>
                 </div>
             </div>

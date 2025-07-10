@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ResearchFacility;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 
 class ResearchFacilityController extends Controller
 {
@@ -20,21 +22,30 @@ class ResearchFacilityController extends Controller
         return view('penelitian.fasilitas.create');
     }
 
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'description' => 'required|string',
-            'image' => 'nullable|image|max:5048',
-        ]);
+public function store(Request $request)
+{
+    $data = $request->validate([
+        'name' => 'required|string',
+        'description' => 'required|string',
+        'image' => 'nullable|image|max:10240',
+    ]);
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('facilities', 'public');
-        }
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
 
-        ResearchFacility::create($data);
-        return redirect()->route('admin.research-facility.index')->with('message', 'Fasilitas berhasil ditambahkan.');
+        // Simpan ke storage/app/public/facilities
+        $file->storeAs('facilities', $filename, 'public');
+
+        // Salin manual ke public/storage/facilities
+        $file->move(public_path('storage/facilities'), $filename);
+
+        $data['image'] = 'facilities/' . $filename;
     }
+
+    ResearchFacility::create($data);
+    return redirect()->route('admin.research-facility.index')->with('message', 'Fasilitas berhasil ditambahkan.');
+}
 
     public function edit($id)
     {
@@ -43,22 +54,36 @@ class ResearchFacilityController extends Controller
     }
 
 
-    public function update(Request $request, ResearchFacility $research_facility)
-    {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'description' => 'required|string',
-            'image' => 'nullable|image|max:5048',
-        ]);
+public function update(Request $request, ResearchFacility $research_facility)
+{
+    $data = $request->validate([
+        'name' => 'required|string',
+        'description' => 'required|string',
+        'image' => 'nullable|image|max:10240',
+    ]);
 
-        if ($request->hasFile('image')) {
+    if ($request->hasFile('image')) {
+        // Hapus gambar lama
+        if ($research_facility->image) {
             Storage::disk('public')->delete($research_facility->image);
-            $data['image'] = $request->file('image')->store('facilities', 'public');
+            @unlink(public_path('storage/' . $research_facility->image));
         }
 
-        $research_facility->update($data);
-        return redirect()->route('admin.research-facility.index')->with('message', 'Fasilitas berhasil diperbarui.');
+        $file = $request->file('image');
+        $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+
+        // Simpan ke storage/app/public/facilities
+        $file->storeAs('facilities', $filename, 'public');
+
+        // Salin manual ke public/storage/facilities
+        $file->move(public_path('storage/facilities'), $filename);
+
+        $data['image'] = 'facilities/' . $filename;
     }
+
+    $research_facility->update($data);
+    return redirect()->route('admin.research-facility.index')->with('message', 'Fasilitas berhasil diperbarui.');
+}
 
     public function destroy(ResearchFacility $research_facility)
     {
