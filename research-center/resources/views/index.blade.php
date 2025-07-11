@@ -34,6 +34,7 @@
 @endsection
 @section('content')
 <!-- section slider begin -->
+<p class="text-danger text-center mt-3">[LOCALE: {{ app()->getLocale() }}]</p>
 
 <section id="section-intro" class="text-light no-top no-bottom relative overflow-hidden z-1000">
     @php
