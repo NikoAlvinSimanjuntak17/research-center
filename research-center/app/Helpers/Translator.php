@@ -12,11 +12,13 @@ public static function translate($text, $target = 'en', $source = 'id')
 {
     if (empty($text)) return '';
 
-    // Gunakan key cache unik per kombinasi source-target
+    // Kalau source dan target sama, tidak perlu translate
+    if ($source === $target) return $text;
+
     $cacheKey = 'translate_' . $source . '_' . $target . '_' . md5($text);
 
     return cache()->remember($cacheKey, now()->addDays(30), function () use ($text, $target, $source) {
-$apiKey = config('services.google_translate.key');
+        $apiKey = config('services.google_translate.key');
 
         $url = "https://translation.googleapis.com/language/translate/v2?key={$apiKey}";
 
@@ -27,7 +29,6 @@ $apiKey = config('services.google_translate.key');
             'format' => 'text',
         ]);
 
-        // Debug jika gagal
         if (!$response->successful()) {
             Log::error('Google Translate API error', [
                 'status' => $response->status(),
@@ -36,10 +37,10 @@ $apiKey = config('services.google_translate.key');
             return $text;
         }
 
-        // Ambil hasil terjemahan
         return $response['data']['translations'][0]['translatedText'] ?? $text;
     });
 }
+
 public static function translateRich($html, $target = 'en', $source = 'id')
 {
     if (empty($html)) return '';
