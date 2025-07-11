@@ -29,12 +29,14 @@ $apiKey = config('services.google_translate.key');
 
         // Debug jika gagal
         if (!$response->successful()) {
-            Log::error('Google Translate API error', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-            return $text;
-        }
+    Log::error('Google Translate API error', [
+        'status' => $response->status(),
+        'body' => $response->body(),
+        'api_key' => $apiKey, // tambahan debug
+    ]);
+    abort(500, 'TRANSLATOR ERROR: ' . $response->body()); // munculkan error ke browser
+}
+
 
         // Ambil hasil terjemahan
         return $response['data']['translations'][0]['translatedText'] ?? $text;
