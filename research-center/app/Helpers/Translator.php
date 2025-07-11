@@ -16,7 +16,7 @@ public static function translate($text, $target = 'en', $source = 'id')
     $cacheKey = 'translate_' . $source . '_' . $target . '_' . md5($text);
 
     return cache()->remember($cacheKey, now()->addDays(30), function () use ($text, $target, $source) {
-        $apiKey = env('GOOGLE_TRANSLATE_API_KEY');
+$apiKey = config('services.google_translate.key');
 
         $url = "https://translation.googleapis.com/language/translate/v2?key={$apiKey}";
 
@@ -51,7 +51,7 @@ public static function translateRich($html, $target = 'en', $source = 'id')
     $xpath = new \DOMXPath($dom);
     $textNodes = $xpath->query('//text()');
 
-    $apiKey = env('GOOGLE_TRANSLATE_API_KEY');
+    $apiKey = config('services.google_translate.key');
     $url = "https://translation.googleapis.com/language/translate/v2?key={$apiKey}";
 
     foreach ($textNodes as $node) {

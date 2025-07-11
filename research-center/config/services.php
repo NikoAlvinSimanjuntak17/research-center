@@ -43,5 +43,8 @@ return [
     'key' => env('SERPAPI_KEY'),
     'google_scholar_url' => env('GOOGLE_SCHOLAR_API_URL'),
 ],
+'google_translate' => [
+    'key' => env('GOOGLE_TRANSLATE_API_KEY'),
+],
 
 ];
