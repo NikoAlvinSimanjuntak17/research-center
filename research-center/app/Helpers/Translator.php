@@ -10,12 +10,14 @@ class Translator
 {
 public static function translate($text, $target = 'en', $source = 'id')
 {
-    if (empty($text) || $source === $target) return $text;
+    if (empty($text)) return '';
 
+    // Gunakan key cache unik per kombinasi source-target
     $cacheKey = 'translate_' . $source . '_' . $target . '_' . md5($text);
 
     return cache()->remember($cacheKey, now()->addDays(30), function () use ($text, $target, $source) {
-        $apiKey = config('services.google_translate.key');
+$apiKey = config('services.google_translate.key');
+
         $url = "https://translation.googleapis.com/language/translate/v2?key={$apiKey}";
 
         $response = Http::post($url, [
@@ -25,6 +27,7 @@ public static function translate($text, $target = 'en', $source = 'id')
             'format' => 'text',
         ]);
 
+        // Debug jika gagal
         if (!$response->successful()) {
             Log::error('Google Translate API error', [
                 'status' => $response->status(),
@@ -33,13 +36,13 @@ public static function translate($text, $target = 'en', $source = 'id')
             return $text;
         }
 
+        // Ambil hasil terjemahan
         return $response['data']['translations'][0]['translatedText'] ?? $text;
     });
 }
-
 public static function translateRich($html, $target = 'en', $source = 'id')
 {
-    if (empty($html) || $source === $target) return $html;
+    if (empty($html)) return '';
 
     $dom = new \DOMDocument();
     libxml_use_internal_errors(true); // suppress warning for malformed HTML
@@ -54,6 +57,7 @@ public static function translateRich($html, $target = 'en', $source = 'id')
     foreach ($textNodes as $node) {
         $originalText = trim($node->nodeValue);
         if ($originalText !== '') {
+            // Translate text only
             $response = Http::post($url, [
                 'q' => $originalText,
                 'target' => $target,
@@ -64,11 +68,6 @@ public static function translateRich($html, $target = 'en', $source = 'id')
             if ($response->successful()) {
                 $translatedText = $response['data']['translations'][0]['translatedText'] ?? $originalText;
                 $node->nodeValue = $translatedText;
-            } else {
-                Log::error('Google Translate API error', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                ]);
             }
         }
     }
@@ -79,9 +78,8 @@ public static function translateRich($html, $target = 'en', $source = 'id')
         $innerHTML .= $dom->saveHTML($child);
     }
 
-    return $innerHTML;
+    return $innerHTML; // langsung bisa pakai {!! !!} di Blade
 }
-
 
 
 
