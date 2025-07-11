@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\http;
 use Illuminate\Support\Facades\Log;
 
 
@@ -12,13 +12,11 @@ public static function translate($text, $target = 'en', $source = 'id')
 {
     if (empty($text)) return '';
 
-    // Kalau source dan target sama, tidak perlu translate
-    if ($source === $target) return $text;
-
+    // Gunakan key cache unik per kombinasi source-target
     $cacheKey = 'translate_' . $source . '_' . $target . '_' . md5($text);
 
     return cache()->remember($cacheKey, now()->addDays(30), function () use ($text, $target, $source) {
-        $apiKey = config('services.google_translate.key');
+        $apiKey = env('GOOGLE_TRANSLATE_API_KEY');
 
         $url = "https://translation.googleapis.com/language/translate/v2?key={$apiKey}";
 
@@ -29,6 +27,7 @@ public static function translate($text, $target = 'en', $source = 'id')
             'format' => 'text',
         ]);
 
+        // Debug jika gagal
         if (!$response->successful()) {
             Log::error('Google Translate API error', [
                 'status' => $response->status(),
@@ -37,10 +36,10 @@ public static function translate($text, $target = 'en', $source = 'id')
             return $text;
         }
 
+        // Ambil hasil terjemahan
         return $response['data']['translations'][0]['translatedText'] ?? $text;
     });
 }
-
 public static function translateRich($html, $target = 'en', $source = 'id')
 {
     if (empty($html)) return '';
@@ -52,7 +51,7 @@ public static function translateRich($html, $target = 'en', $source = 'id')
     $xpath = new \DOMXPath($dom);
     $textNodes = $xpath->query('//text()');
 
-    $apiKey = config('services.google_translate.key');
+    $apiKey = env('GOOGLE_TRANSLATE_API_KEY');
     $url = "https://translation.googleapis.com/language/translate/v2?key={$apiKey}";
 
     foreach ($textNodes as $node) {
