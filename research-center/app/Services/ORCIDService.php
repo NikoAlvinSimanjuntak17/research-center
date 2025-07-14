@@ -12,14 +12,14 @@ class ORCIDService
 
     public function validateOwner(string $orcidId, string $name): bool
     {
-        $url = "{$this->baseUrl}/{$orcidId}/personal-details";
+        $url = "https://pub.orcid.org/v3.0/{$orcidId}/person";
 
         $response = Http::withHeaders([
             'Accept' => 'application/json',
         ])->get($url);
 
         if (!$response->successful()) {
-            Log::warning("Gagal memvalidasi ORCID ID: {$orcidId}");
+            Log::warning("Gagal validasi ORCID ID: $orcidId. Status: " . $response->status());
             return false;
         }
 
@@ -27,27 +27,34 @@ class ORCIDService
 
         $given = data_get($data, 'name.given-names.value', '');
         $family = data_get($data, 'name.family-name.value', '');
+        $orcidFullName = strtolower(trim("$given $family"));
+        $inputName = strtolower($name);
 
-        $orcidName = trim("$given $family");
-
-        // Bandingkan nama ORCID dengan nama yang dimasukkan
-        return strcasecmp($orcidName, $name) === 0;
+        // Longgar: cek apakah nama pengguna mengandung nama depan/belakang dari ORCID
+        return str_contains($inputName, strtolower($given)) ||
+            str_contains($inputName, strtolower($family)) ||
+            str_contains($inputName, $orcidFullName);
     }
+
     public function isValidOrcid(string $orcidId, string $name = null): bool
     {
-        $response = Http::accept('application/json')
-            ->get(config('services.orcid.api_url') . "/$orcidId/person");
+        $url = "https://pub.orcid.org/v3.0/{$orcidId}/person";
 
-        if ($response->failed()) return false;
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->get($url);
+
+        if (!$response->successful()) return false;
 
         if ($name) {
-            $given = $response->json('name.given-names.value');
-            $family = $response->json('name.family-name.value');
+            $given = data_get($response->json(), 'name.given-names.value', '');
+            $family = data_get($response->json(), 'name.family-name.value', '');
             return stripos("$given $family", $name) !== false;
         }
 
         return true;
     }
+
 
     public function getCitationCountByDOI(string $doi): ?int
     {
