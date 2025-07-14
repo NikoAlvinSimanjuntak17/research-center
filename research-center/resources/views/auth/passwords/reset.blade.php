@@ -1,141 +1,80 @@
-<!doctype html>
-<html lang="en">
+@extends('layout.frontend.main')
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Login</title>
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}" />
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/bootstrap.min.css') }}">
-    <!-- Typography CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/typography.css') }}">
-    <!-- Style CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
-    <!-- Responsive CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/responsive.css') }}">
-</head>
+@section('content')
 
-<body>
-    <!-- loader Start -->
-    <div id="loading">
-        <div id="loading-center">
+<section id="subheader" class="relative jarallax text-light">
+    @php
+        use Illuminate\Support\Facades\DB;
+        $slider = DB::table('sliders')->where('active', 1)->orderBy('updated_at', 'desc')->first();
+    @endphp
+    <img src="{{ asset('storage/sliders/' . $slider->image) }}" class="jarallax-img" alt="">
+    <div class="container relative z-index-1000">
+        <div class="row">
+            <div class="col-lg-6">
+                <ul class="crumb">
+                    <li><a href="{{ url('/') }}">Home</a></li>
+                    <li class="active">Reset Password</li>
+                </ul>
+                <h1 class="text-uppercase">Reset Password</h1>
+                <p class="col-lg-10 lead">Silakan atur ulang kata sandi akun Anda.</p>
+            </div>
         </div>
     </div>
-    <!-- loader END -->
-    <!-- Sign in Start -->
-    <section class="sign-in-page">
-        <div class="container bg-white mt-5 p-0">
-            <div class="row no-gutters">
-                <div class="col-sm-6 align-self-center">
-                    <div class="sign-in-from">
-                        <h1 class="mb-0">Ubah Password</h1>
-                        <form class="mt-4" method="POST" action="{{ route('password.update') }}">
+    <img src="{{ asset('images/logo-wm.webp') }}" class="abs end-0 bottom-0 z-2 w-20" alt="">
+    <div class="de-gradient-edge-top dark"></div>
+    <div class="de-overlay"></div>
+</section>
+
+<section class="no-top no-bottom" style="margin-top: 8em">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="card shadow border-0 rounded-4" style="min-height: 520px;">
+                    <div class="card-body p-4 d-flex flex-column justify-content-center">
+                        <h4 class="text-center mb-4">Atur Ulang Kata Sandi</h4>
+
+                        @if(session('status'))
+                            <div class="alert alert-success">{{ session('status') }}</div>
+                        @endif
+
+                        @if($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('password.update') }}">
                             @csrf
                             <input type="hidden" name="token" value="{{ $token }}">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Alamat E-Mail</label>
-                                <input type="email" class="form-control mb-0 @error('email') is-invalid @enderror"
-                                    name="email" value="{{$email ?? old('email') }}" required autocomplete="email" autofocus
-                                    id="email" placeholder="Enter email">
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <input type="hidden" name="email" value="{{ $email }}">
+
+                            <div class="mb-3">
+                                <label class="form-label">Password Baru</label>
+                                <input type="password" name="password" class="form-control" required>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleInputPassword1">Password Baru</label>
-                                <input type="password" class="form-control mb-0 @error('password') is-invalid @enderror"
-                                    name="password" required autocomplete="new-password" id="password"
-                                    placeholder="Password">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+
+                            <div class="mb-3">
+                                <label class="form-label">Konfirmasi Password</label>
+                                <input type="password" name="password_confirmation" class="form-control" required>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleInputPassword1">Konfirmasi Password</label>
-                                <input type="password" class="form-control mb-0 @error('password') is-invalid @enderror"
-                                    name="password_confirmation" required autocomplete="new-password" id="password-confirm"
-                                    placeholder="Password">
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn-primary" style="height: 50px">Simpan Password</button>
                             </div>
-                            <div class="d-inline-block w-100">
-                                <button type="submit" class="btn btn-primary float-right">{{ __('Simpan') }}</button>
+
+                            <div class="text-center mt-4">
+                                <a href="{{ route('login') }}">Kembali ke Login</a>
                             </div>
                         </form>
-                    </div>
-                </div>
-                <div class="col-sm-6 text-center">
-                    <div class="sign-in-detail text-white">
-                        <a class="sign-in-logo mb-5" href="#"><img src="{{ asset('admin/images/logo-white.png') }}"
-                                class="img-fluid" alt="logo"></a>
-                        <div class="owl-carousel" data-autoplay="true" data-loop="true" data-nav="false"
-                            data-dots="true" data-items="1" data-items-laptop="1" data-items-tab="1"
-                            data-items-mobile="1" data-items-mobile-sm="1" data-margin="0">
-                            <div class="item">
-                                <img src="{{ asset('admin/images/login/1.png') }}" class="img-fluid mb-4" alt="logo">
-                                <h4 class="mb-1 text-white">Manage your orders</h4>
-                                <p>It is a long established fact that a reader will be distracted by the readable
-                                    content.</p>
-                            </div>
-                            <div class="item">
-                                <img src="{{ asset('admin/images/login/1.png') }}" class="img-fluid mb-4" alt="logo">
-                                <h4 class="mb-1 text-white">Manage your orders</h4>
-                                <p>It is a long established fact that a reader will be distracted by the readable
-                                    content.</p>
-                            </div>
-                            <div class="item">
-                                <img src="{{ asset('admin/images/login/1.png') }}" class="img-fluid mb-4" alt="logo">
-                                <h4 class="mb-1 text-white">Manage your orders</h4>
-                                <p>It is a long established fact that a reader will be distracted by the readable
-                                    content.</p>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- Sign in END -->
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="{{ asset('admin/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('admin/js/popper.min.js') }}"></script>
-    <script src="{{ asset('admin/js/bootstrap.min.js') }}"></script>
-    <!-- Appear JavaScript -->
-    <script src="{{ asset('admin/js/jquery.appear.js') }}"></script>
-    <!-- Countdown JavaScript -->
-    <script src="{{ asset('admin/js/countdown.min.js') }}"></script>
-    <!-- Counterup JavaScript -->
-    <script src="{{ asset('admin/js/waypoints.min.js') }}"></script>
-    <script src="{{ asset('admin/js/jquery.counterup.min.js') }}"></script>
-    <!-- Wow JavaScript -->
-    <script src="{{ asset('admin/js/wow.min.js') }}"></script>
-    <!-- Apexcharts JavaScript -->
-    <script src="{{ asset('admin/js/apexcharts.js') }}"></script>
-    <!-- Slick JavaScript -->
-    <script src="{{ asset('admin/js/slick.min.js') }}"></script>
-    <!-- Select2 JavaScript -->
-    <script src="{{ asset('admin/js/select2.min.js') }}"></script>
-    <!-- Owl Carousel JavaScript -->
-    <script src="{{ asset('admin/js/owl.carousel.min.js') }}"></script>
-    <!-- Magnific Popup JavaScript -->
-    <script src="{{ asset('admin/js/jquery.magnific-popup.min.js') }}"></script>
-    <!-- Smooth Scrollbar JavaScript -->
-    <script src="{{ asset('admin/js/smooth-scrollbar.js') }}"></script>
-    <!-- Chart Custom JavaScript -->
-    <script src="{{ asset('admin/js/chart-custom.js') }}"></script>
-    <!-- Custom JavaScript -->
-    <script src="{{ asset('admin/js/custom.js') }}"></script>
-</body>
-
-</html>
+    </div>
+</section>
+@endsection
