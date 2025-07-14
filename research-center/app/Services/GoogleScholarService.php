@@ -20,20 +20,28 @@ class GoogleScholarService
 
     public function validateOwner(string $scholarId, string $name): bool
     {
-        $response = Http::get($this->baseUrl, [
-            'api_key'    => $this->apiKey,
-            'engine'     => 'google_scholar_author',
-            'author_id'  => $scholarId,
-        ]);
+        try {
+            $response = Http::get(config('services.serpapi.google_scholar_url'), [
+                'engine' => 'google_scholar_author',
+                'author_id' => $scholarId,
+                'api_key' => config('services.serpapi.key'),
+            ]);
 
-        if ($response->failed() || !$response->json('author')) {
-            Log::warning("Gagal memvalidasi Google Scholar ID: {$scholarId}");
+            if ($response->failed()) return false;
+
+            $profileName = data_get($response->json(), 'author.name');
+            if (!$profileName) return false;
+
+            $profileName = strtolower($profileName);
+            $name = strtolower($name);
+
+            // Cocokkan apakah nama user mengandung bagian dari nama profile
+            return Str::contains($profileName, explode(' ', $name)[0]) // nama depan
+                || Str::contains($profileName, explode(' ', $name)[1] ?? ''); // nama belakang
+        } catch (\Exception $e) {
+            Log::error("Validasi Google Scholar gagal: " . $e->getMessage());
             return false;
         }
-
-        $retrievedName = $response->json('author.name');
-
-        return stripos($retrievedName, $name) !== false;
     }
 
     public function fetchPublications(string $scholarId): array
