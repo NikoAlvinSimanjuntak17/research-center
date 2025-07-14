@@ -5,51 +5,71 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class GoogleScholarService
 {
-    public function fetchPublications($googleScholarId)
-    {
-        $url = env('GOOGLE_SCHOLAR_API_URL');
-        $apiKey = env('SERPAPI_KEY');
+    protected $apiKey;
+    protected $baseUrl;
 
-        $response = Http::get($url, [
-            'engine' => 'google_scholar_author',
-            'author_id' => $googleScholarId,
-            'api_key' => $apiKey
+    public function __construct()
+    {
+        $this->apiKey = config('services.serpapi.key');
+        $this->baseUrl = config('services.serpapi.google_scholar_url');
+    }
+
+    public function validateOwner(string $scholarId, string $name): bool
+    {
+        $response = Http::get($this->baseUrl, [
+            'api_key'    => $this->apiKey,
+            'engine'     => 'google_scholar_author',
+            'author_id'  => $scholarId,
         ]);
 
-        // Jika request gagal atau tidak sukses
-        if (!$response->ok()) {
+        if ($response->failed() || !$response->json('author')) {
+            Log::warning("Gagal memvalidasi Google Scholar ID: {$scholarId}");
+            return false;
+        }
+
+        $retrievedName = $response->json('author.name');
+
+        return stripos($retrievedName, $name) !== false;
+    }
+
+    public function fetchPublications(string $scholarId): array
+    {
+        $response = Http::get($this->baseUrl, [
+            'api_key'    => $this->apiKey,
+            'engine'     => 'google_scholar_author',
+            'author_id'  => $scholarId,
+        ]);
+
+        if (!$response->successful()) {
+            Log::error('Gagal mengambil publikasi dari Google Scholar', ['id' => $scholarId]);
             return [];
         }
 
         $data = $response->json();
 
-        // Validasi struktur data
         if (!isset($data['articles']) || !is_array($data['articles'])) {
             return [];
         }
 
-        $publications = [];
-
-        foreach ($data['articles'] as $item) {
+        return collect($data['articles'])->map(function ($item) {
             $year = Arr::get($item, 'year');
             $pubDate = $year ? $year . '-01-01' : null;
             $doi = Arr::get($item, 'doi');
             $citationId = Arr::get($item, 'citation_id');
 
-            // Gunakan DOI jika ada, jika tidak fallback ke link Google Scholar
             $scholarUrl = $doi
                 ? 'https://scholar.google.com/scholar_lookup?doi=' . urlencode($doi)
                 : Arr::get($item, 'link');
 
-            // Ambil jumlah sitasi sebagai integer
             $citedBy = is_array(Arr::get($item, 'cited_by'))
                 ? Arr::get($item['cited_by'], 'value', 0)
                 : (int) Arr::get($item, 'cited_by', 0);
 
-            $publications[] = [
+            return [
                 'title'             => Arr::get($item, 'title', 'Untitled'),
                 'year'              => $year,
                 'doi'               => $doi,
@@ -57,15 +77,13 @@ class GoogleScholarService
                 'journal'           => Arr::get($item, 'publication', 'Tidak Diketahui'),
                 'source'            => 'Google Scholar',
                 'url'               => $scholarUrl,
-                'abstract'          => null, // SerpAPI tidak menyertakan abstract
+                'abstract'          => null,
                 'publication_date'  => $pubDate,
                 'external_id'       => $citationId ?? Str::uuid()->toString(),
                 'type'              => 'journal',
                 'cited_by'          => $citedBy,
                 'raw_data'          => json_encode($item),
             ];
-        }
-
-        return $publications;
+        })->toArray();
     }
 }

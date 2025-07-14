@@ -3,11 +3,51 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ORCIDService
 {
     protected $baseUrl = 'https://pub.orcid.org/v3.0/';
+
+    public function validateOwner(string $orcidId, string $name): bool
+    {
+        $url = "{$this->baseUrl}/{$orcidId}/personal-details";
+
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->get($url);
+
+        if (!$response->successful()) {
+            Log::warning("Gagal memvalidasi ORCID ID: {$orcidId}");
+            return false;
+        }
+
+        $data = $response->json();
+
+        $given = data_get($data, 'name.given-names.value', '');
+        $family = data_get($data, 'name.family-name.value', '');
+
+        $orcidName = trim("$given $family");
+
+        // Bandingkan nama ORCID dengan nama yang dimasukkan
+        return strcasecmp($orcidName, $name) === 0;
+    }
+    public function isValidOrcid(string $orcidId, string $name = null): bool
+    {
+        $response = Http::accept('application/json')
+            ->get(config('services.orcid.api_url') . "/$orcidId/person");
+
+        if ($response->failed()) return false;
+
+        if ($name) {
+            $given = $response->json('name.given-names.value');
+            $family = $response->json('name.family-name.value');
+            return stripos("$given $family", $name) !== false;
+        }
+
+        return true;
+    }
 
     public function getCitationCountByDOI(string $doi): ?int
     {
@@ -19,7 +59,7 @@ class ORCIDService
         } catch (\Exception $e) {
             \Log::error("Gagal ambil citation count dari Crossref: {$e->getMessage()}");
         }
-        
+
         return null;
     }
 
@@ -29,53 +69,53 @@ class ORCIDService
         $response = Http::withHeaders([
             'Accept' => 'application/json',
         ])->get($this->baseUrl . $orcidId . '/works');
-    
+
         if (!$response->successful()) {
             \Log::error('Failed to fetch ORCID data for ID: ' . $orcidId);
             return [];
         }
-    
+
         $data = $response->json();
         $publications = [];
-    
+
         if (!isset($data['group']) || empty($data['group'])) {
             return $publications;
         }
-    
+
         foreach ($data['group'] as $group) {
             $workSummary = $group['work-summary'][0] ?? null;
             if (!$workSummary || !isset($workSummary['put-code'])) continue;
-    
+
             $putCode = $workSummary['put-code'];
-    
+
             // Ambil detail work untuk mendapatkan author
             $detailResponse = Http::withHeaders([
                 'Accept' => 'application/json',
             ])->get($this->baseUrl . $orcidId . '/work/' . $putCode);
-    
+
             if (!$detailResponse->successful()) {
                 \Log::warning("Gagal mengambil detail publikasi ORCID: {$orcidId} / {$putCode}");
                 continue;
             }
-    
+
             $detail = $detailResponse->json();
-    
+
             $title = data_get($detail, 'title.title.value', 'Untitled');
             $year  = data_get($detail, 'publication-date.year.value');
             $month = data_get($detail, 'publication-date.month.value', '01');
             $day   = data_get($detail, 'publication-date.day.value', '01');
             $pubDate = $year ? "{$year}-{$month}-{$day}" : null;
-    
+
             $doi = collect(data_get($detail, 'external-ids.external-id', []))
                 ->first(fn($id) => strtolower($id['external-id-type'] ?? '') === 'doi')['external-id-value'] ?? null;
-    
+
             $authors = collect(data_get($detail, 'contributors.contributor', []))
                 ->map(fn($c) => data_get($c, 'credit-name.value') ?? data_get($c, 'contributor-orcid.path'))
                 ->filter()
                 ->implode(', ');
-            
+
             $citationCount = $doi ? $this->getCitationCountByDOI($doi) : 0;
-    
+
             $publications[] = [
                 'title' => $title,
                 'year' => $year,
@@ -92,7 +132,7 @@ class ORCIDService
                 'raw_data' => json_encode($detail),
             ];
         }
-    
+
         return $publications;
-    }    
+    }
 }
