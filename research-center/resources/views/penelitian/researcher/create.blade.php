@@ -26,9 +26,8 @@
                         <input type="email" class="form-control" id="email" name="email" placeholder="Email Peneliti" required>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label for="password">Kata Sandi</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Kata Sandi" required>
+                    <div class="alert alert-info">
+                        Kata sandi tidak perlu diisi. Peneliti akan menerima email untuk mengatur sendiri kata sandinya.
                     </div>
 
                     <div class="form-group mb-3">
@@ -39,6 +38,7 @@
                         </center>
                     </div>
                 </form>
+
 
             </div>
         </div>
