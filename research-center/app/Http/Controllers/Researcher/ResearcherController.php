@@ -93,13 +93,6 @@ class ResearcherController extends Controller
                 }
             }
 
-            if ($request->scopus_id) {
-                $scopusService = new ScopusService();
-                if (!$scopusService->validateOwner($request->scopus_id, $user->name)) {
-                    throw ValidationException::withMessages(['scopus_id' => 'Scopus ID tidak valid atau bukan milik Anda.']);
-                }
-            }
-
             if ($request->googlescholar_id) {
                 $scholarService = new GoogleScholarService();
                 if (!$scholarService->validateOwner($request->googlescholar_id, $user->name)) {
