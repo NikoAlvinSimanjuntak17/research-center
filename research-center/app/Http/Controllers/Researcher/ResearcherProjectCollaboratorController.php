@@ -30,11 +30,11 @@ class ResearcherProjectCollaboratorController extends Controller
         return view('researcher.projects.collaborators.show', compact('project', 'collaborator'));
     }
 
-    // Update status kolaborator (approve/reject)
     public function updateCollaboratorStatus(Request $request, $projectId, $userId)
     {
         $request->validate([
             'status' => 'required|in:approved,rejected',
+            'reason' => 'nullable|string|max:1000', // Tambahkan validasi reason
         ]);
 
         $project = Project::where('created_by', auth()->id())->findOrFail($projectId);
@@ -42,11 +42,16 @@ class ResearcherProjectCollaboratorController extends Controller
         $collaborator = $project->collaborators()->where('user_id', $userId)->firstOrFail();
 
         $collaborator->status = $request->status;
+
+        // Hanya simpan alasan jika status adalah "rejected"
+        $collaborator->reason = $request->status === 'rejected' ? $request->reason : null;
+
         $collaborator->save();
 
         return redirect()->route('researcher.projects.collaborators.index')
             ->with('success', "Status kolaborator berhasil diubah menjadi {$request->status}.");
     }
+
 
     // Hapus kolaborator dari proyek
     public function removeCollaborator($projectId, $userId)

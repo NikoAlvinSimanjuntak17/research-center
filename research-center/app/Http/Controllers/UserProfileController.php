@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Publication;
+use App\Models\Project;
+use App\Models\Collaborator;
+use App\Models\User;
 
 class UserProfileController extends Controller
 {
@@ -12,20 +16,40 @@ class UserProfileController extends Controller
     {
         $user = Auth::user();
 
-        // Ambil proyek yang diikuti oleh user melalui tabel collaborators
-        $projectIds = $user->collaborations->pluck('project_id');
+        // Ambil semua data dari relasi collaborators
+        $collaborators = $user->collaborators()->with('project')->get();
 
-        $inProgressProjects = \App\Models\Project::whereIn('id', $projectIds)
-            ->where('progress_status', 'in_progress')->get();
+        // Filter berdasarkan status
+        $approvedCollaborators = $collaborators->where('status', 'approved');
+        $pendingCollaborators  = $collaborators->where('status', 'pending');
+        $rejectedCollaborators = $collaborators->where('status', 'rejected');
 
-        $completedProjects = \App\Models\Project::whereIn('id', $projectIds)
-            ->where('progress_status', 'completed')->get();
+        // Ambil project_id dari yang disetujui
+        $approvedProjectIds = $approvedCollaborators->pluck('project_id');
 
-        // Ambil publikasi yang terkait dengan proyek yang diikuti
-        $publications = \App\Models\Publication::whereIn('project_id', $projectIds)->get();
+        // Ambil proyek berdasarkan status progress
+        $inProgressProjects = \App\Models\Project::whereIn('id', $approvedProjectIds)
+            ->where('progress_status', 'in_progress')
+            ->get();
 
-        return view('frontend.profil.index', compact('user', 'inProgressProjects', 'completedProjects', 'publications'));
+        $completedProjects = \App\Models\Project::whereIn('id', $approvedProjectIds)
+            ->where('progress_status', 'completed')
+            ->get();
+
+        // Ambil publikasi dari proyek yang di-approve
+        $publications = \App\Models\Publication::whereIn('project_id', $approvedProjectIds)->get();
+
+        return view('frontend.profil.index', compact(
+            'user',
+            'approvedCollaborators',
+            'pendingCollaborators',
+            'rejectedCollaborators',
+            'inProgressProjects',
+            'completedProjects',
+            'publications'
+        ));
     }
+
 
     public function edit()
     {
@@ -47,23 +71,23 @@ class UserProfileController extends Controller
 
         // Proses unggah gambar
         // Proses unggah gambar
-if ($request->hasFile('user_img')) {
-    // Simpan file baru ke storage
-    $path = $request->file('user_img')->store('user_images', 'public');
-    $validated['user_img'] = $path;
+        if ($request->hasFile('user_img')) {
+            // Simpan file baru ke storage
+            $path = $request->file('user_img')->store('user_images', 'public');
+            $validated['user_img'] = $path;
 
-    // Salin file juga ke public/storage/user_images
-    $filename = basename($path);
-    $publicFolder = public_path('storage/user_images');
-    if (!file_exists($publicFolder)) {
-        mkdir($publicFolder, 0777, true);
-    }
+            // Salin file juga ke public/storage/user_images
+            $filename = basename($path);
+            $publicFolder = public_path('storage/user_images');
+            if (!file_exists($publicFolder)) {
+                mkdir($publicFolder, 0777, true);
+            }
 
-    copy(
-        storage_path('app/public/user_images/' . $filename),
-        public_path('storage/user_images/' . $filename)
-    );
-}
+            copy(
+                storage_path('app/public/user_images/' . $filename),
+                public_path('storage/user_images/' . $filename)
+            );
+        }
 
 
         // Update data user

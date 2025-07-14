@@ -15,13 +15,32 @@ class JoinProjectController extends Controller
     {
         $userId = auth()->id();
 
-        // Proyek yang sudah diikuti oleh user (sebagai kolaborator), tapi bukan proyek miliknya
-        $joinedProjects = Project::whereHas('collaborators', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })
-        ->where('created_by', '!=', $userId)
-        ->with(['owner', 'collaborators.user'])
-        ->get();
+        // Ambil semua kolaborasi user (dengan data proyek dan status kolaborator)
+        $collaborations = \App\Models\Collaborator::with('project.owner')
+            ->where('user_id', $userId)
+            ->whereHas('project', function ($query) use ($userId) {
+                $query->where('created_by', '!=', $userId);
+            })
+            ->get();
+
+        // Kelompokkan berdasarkan status
+        $joinedProjects = [
+            'approved' => [],
+            'pending' => [],
+            'rejected' => [],
+        ];
+
+        foreach ($collaborations as $collab) {
+            $project = $collab->project;
+            if ($project) {
+                $project->pivot = (object)[
+                    'status' => $collab->status,
+                    'position' => $collab->position,
+                    'reason' => $collab->reason ?? null,
+                ];
+                $joinedProjects[$collab->status][] = $project;
+            }
+        }
 
         // Proyek yang bisa diikuti
         $availableProjects = Project::with('owner')
@@ -38,6 +57,7 @@ class JoinProjectController extends Controller
             'canJoin' => true,
         ]);
     }
+
 
     /**
      * Proses permintaan join ke sebuah proyek.

@@ -63,7 +63,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'id');
     }
-    public function collaborations()
+    public function collaborators()
     {
         return $this->hasMany(Collaborator::class);
     }

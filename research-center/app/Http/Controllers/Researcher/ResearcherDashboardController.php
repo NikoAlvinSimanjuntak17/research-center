@@ -75,6 +75,14 @@ class ResearcherDashboardController extends Controller
             })
             ->count();
 
+        $duplicateTitleCount = Publication::where('researcher_id', $researcher->id)
+            ->select('title')
+            ->groupBy('title')
+            ->havingRaw('COUNT(*) > 1')
+            ->get()
+            ->count();
+
+
 
         return view('researcher.dashboard', [
             'totalProjects' => $totalProjects,
@@ -85,11 +93,15 @@ class ResearcherDashboardController extends Controller
             'pubScopus' => $publications->where('source', 'scopus')->count(),
             'pubScholar' => $publications->where('source', 'googlescholar')->count(),
             'pubTsth' => $publications->where('source', 'tsth2')->count(),
-            'totalPublications' => Publication::where('researcher_id', $researcher->id)->count(),
+            'totalPublications' => Publication::where('researcher_id', $researcher->id)
+                ->select('title')
+                ->distinct()
+                ->count('title'),
+
             'totalReviews' => $totalReviews,
             'totalDatasetsSold' => $totalDatasetsSold,
             'totalDatasets' => $totalDatasets,
+            'duplicateTitleCount' => $duplicateTitleCount,
         ]);
     }
-
 }
