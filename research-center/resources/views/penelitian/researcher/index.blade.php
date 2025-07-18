@@ -87,7 +87,7 @@
                 render: function (data, type, row, meta) {
                     if (type === 'display') {
                         let btn = '';
-                        btn += `<a href="{{ url('admin/researcher/edit') }}/${row.id}" class="btn btn-outline-success rounded-pill btn-sm" title="Edit"><i class="ph-pencil me-2"></i> Edit</a> `;
+                        
                         btn += `<a href="{{ url('admin/researcher/show') }}/${row.id}" class="btn btn-outline-primary btn-icon btn-sm" title="Lihat"><i class="ph-eye"></i></a> `;
                         btn += `<a href="{{ url('admin/researcher/destroy') }}/${row.id}" class="btn btn-outline-danger btn-icon btn-sm" onclick="return confirm('Apakah kamu yakin ingin menghapus peneliti ini?')" title="Hapus"><i class="ph-trash"></i></a>`;
                         return btn;
