@@ -86,11 +86,11 @@ $locale = app()->getLocale();
                                 <a class="menu-item" href="#">{{ Translator::translate('Penelitian', $locale, 'id') }}</a>
                                 <ul>
                                     <li><a href="{{ route('frontend-komoditas.index') }}">{{ Translator::translate('Komoditas', $locale, 'id') }}</a></li>
-                                    <li><a href="{{ route('frontend-dataset.index') }}">{{ Translator::translate('Data Riset Penelitian', $locale, 'id') }}</a></li>
+                                    <li><a href="#">{{ Translator::translate('Data Riset Penelitian', $locale, 'id') }}</a></li>
                                     <li><a href="{{ route('frontend-publication.index') }}">{{ Translator::translate('Publikasi Penelitian', $locale, 'id') }}</a></li>
                                     <li><a href="{{ route('frontend-fasilitas.index') }}">{{ Translator::translate('Fasilitas Penelitian', $locale, 'id') }}</a></li>
                                     <li><a href="{{ route('frontend-researchers.list') }}">{{ Translator::translate('Tim Peneliti', $locale, 'id') }}</a></li>
-                                    <li><a href="{{ route('frontend-project.index') }}">{{ Translator::translate('Proyek Penelitian', $locale, 'id') }}</a></li>
+                                    <li><a href="#">{{ Translator::translate('Proyek Penelitian', $locale, 'id') }}</a></li>
                                     <li><a href="{{ route('frontend-partnership.index') }}">{{ Translator::translate('Kerja Sama', $locale, 'id') }}</a></li>
                                 </ul>
                             </li>
