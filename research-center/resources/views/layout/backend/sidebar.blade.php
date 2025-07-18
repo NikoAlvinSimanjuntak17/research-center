@@ -126,7 +126,7 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                     </li>
                                         <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.orders.index') ? 'active' : '' }}"
-                            href="{{ route('admin.orders.index') }}">
+                            href="#">
                             <i class="ph-newspaper"></i>
                             <span>Semua Pesanan</span>
                         </a>
@@ -164,26 +164,26 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{route('dataset.index')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-flask"></i>
                             <span>Dataset</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{route('coupon.index')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-tag"></i>
                             <span>Kupon</span>
                         </a>
            
                     </li>
                     <li class="nav-item">
-                        <a href="{{route('event.index')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-calendar-blank"></i>
                             <span>Events</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{route('event.verified')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-newspaper"></i>
                             <span>Sertifikat</span>
                         </a>
