@@ -189,7 +189,7 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         </a>
                     </li>
 
-                    <!-- <li
+                    <li
                         class="nav-item nav-item-submenu {{ Request::is('admin/projects*', 'admin/collaborators*') ? 'nav-item-open' : '' }}">
                         <a href="#"
                             class="nav-link {{ Request::is('admin/projects*', 'admin/collaborators*') ? 'active' : '' }}">
@@ -199,20 +199,20 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         <ul
                             class="nav-group-sub collapse {{ Request::is('admin/projects*', 'admin/collaborators*') ? 'show' : '' }}">
                             <li class="nav-item">
-                                <a href="{{ route('admin.projects.index') }}"
+                                <a href="#"
                                     class="nav-link {{ Request::is('admin/projects*') && !Request::is('admin/projects/collaborators*') ? 'active' : '' }}">
                                     Proyek
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('admin.collaborators.index') }}"
+                                <a href="#"
                                     class="nav-link {{ Request::is('admin/collaborators*') ? 'active' : '' }}">
                                     Kolaborator
                                 </a>
                             </li>
                         </ul>
-                    </li> -->
-
+                    </li>
+                    
                     <li class="nav-item">
                         <a href="{{ route('contact.index') }}"
                             class="nav-link {{ Request::is('admin/contact*') ? 'active' : '' }}">
