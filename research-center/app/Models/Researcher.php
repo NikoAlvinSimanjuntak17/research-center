@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Publication;
-use App\Models\Department;  
+use App\Models\Department;
 use App\Models\Project;
+use App\Models\ResearchData;
 
 class Researcher extends Model
 {
@@ -32,7 +33,7 @@ class Researcher extends Model
         'active',
         'name',
         'email',
-    ];      
+    ];
 
     public function user()
     {
@@ -53,4 +54,10 @@ class Researcher extends Model
     {
         return $this->hasMany(Project::class, 'leader_id');
     }
+
+    public function researchDatas()
+    {
+        return $this->hasMany(ResearchData::class, 'researcher_id');
+    }
 }
+    

@@ -9,6 +9,7 @@ use App\Models\Researcher;
 use Illuminate\Support\Facades\Hash;
 use Laratrust\Models\Role;
 use Yajra\DataTables\DataTables;
+use App\Models\ResearchData;
 
 
 class AdminResearcherController extends Controller
@@ -25,21 +26,25 @@ class AdminResearcherController extends Controller
         return view('penelitian.researcher.show', compact('researcher'));
     }
 
-
     public function destroy($id)
     {
         $researcher = Researcher::findOrFail($id);
         $user = $researcher->user;
 
-        // Hapus semua data terkait terlebih dahulu
-        $researcher->researchDatas()->delete();
+        // Hapus semua ResearchData terkait peneliti ini
+        foreach ($researcher->researchDatas as $data) {
+            // Hapus semua review terkait research data ini (jika perlu)
+            $data->reviews()->delete();
+            $data->delete();
+        }
 
-        // Lalu hapus peneliti dan user-nya
+        // Hapus researcher dan user-nya
         $researcher->delete();
         $user->delete();
 
         return redirect()->route('researcher.index')->with('success', 'Peneliti berhasil dihapus.');
     }
+
 
 
     public function create()
