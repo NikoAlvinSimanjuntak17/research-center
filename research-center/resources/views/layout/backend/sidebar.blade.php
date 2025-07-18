@@ -189,7 +189,7 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         </a>
                     </li>
 
-                    <li
+                    <!-- <li
                         class="nav-item nav-item-submenu {{ Request::is('admin/projects*', 'admin/collaborators*') ? 'nav-item-open' : '' }}">
                         <a href="#"
                             class="nav-link {{ Request::is('admin/projects*', 'admin/collaborators*') ? 'active' : '' }}">
@@ -211,7 +211,8 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> -->
+
                     <li class="nav-item">
                         <a href="{{ route('contact.index') }}"
                             class="nav-link {{ Request::is('admin/contact*') ? 'active' : '' }}">
