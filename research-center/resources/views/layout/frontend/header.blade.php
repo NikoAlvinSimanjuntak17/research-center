@@ -1,7 +1,7 @@
 <!-- header begin -->
 @php
-    use App\Helpers\Translator;
-    $locale = app()->getLocale();
+use App\Helpers\Translator;
+$locale = app()->getLocale();
 @endphp
 
 
@@ -12,14 +12,15 @@
         outline: none !important;
         box-shadow: none !important;
     }
+
     .btn-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px;
-    height: 35px;
-    width: 35px;
-}
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+        height: 35px;
+        width: 35px;
+    }
 </style>
 
 <header class="transparent">
@@ -93,15 +94,15 @@
                                     <li><a href="{{ route('frontend-partnership.index') }}">{{ Translator::translate('Kerja Sama', $locale, 'id') }}</a></li>
                                 </ul>
                             </li>
-                            <li><a class="menu-item" href="{{ route('frontend-event.index') }}">{{ Translator::translate('Acara', $locale, 'id') }}</a></li>
+                            <li><a class="menu-item" href="#">{{ Translator::translate('Acara', $locale, 'id') }}</a></li>
                             <li><a class="menu-item" href="{{ route('frontend-news.index') }}">{{ Translator::translate('Berita', $locale, 'id') }}</a></li>
                             <li><a class="menu-item" href="{{ route('frontend-gallery.index') }}">{{ Translator::translate('Galeri', $locale, 'id') }}</a></li>
-                        <li class="d-block d-lg-none">
-                            <div class="d-flex flex-column gap-2 p-2">
-                                <a href="{{ route('set.locale', 'id') }}" class="btn-sm {{ $locale == 'id' ? 'btn-primary' : 'btn-outline-secondary' }}">🇮🇩 ID</a>
-                                <a href="{{ route('set.locale', 'en') }}" class="btn-sm {{ $locale == 'en' ? 'btn-primary' : 'btn-outline-secondary' }}">🇺🇸 EN</a>
-                            </div>
-                        </li>
+                            <li class="d-block d-lg-none">
+                                <div class="d-flex flex-column gap-2 p-2">
+                                    <a href="{{ route('set.locale', 'id') }}" class="btn-sm {{ $locale == 'id' ? 'btn-primary' : 'btn-outline-secondary' }}">🇮🇩 ID</a>
+                                    <a href="{{ route('set.locale', 'en') }}" class="btn-sm {{ $locale == 'en' ? 'btn-primary' : 'btn-outline-secondary' }}">🇺🇸 EN</a>
+                                </div>
+                            </li>
 
                         </ul>
                     </div>
@@ -110,55 +111,57 @@
                     <div class="de-flex-col">
                         <div class="menu_side_area d-flex align-items-center">
                             @if(Auth::check())
-                                <a href="{{ route('frontend-cart.index') }}" class="btn-icon position-relative">
-                                    <i class="fas fa-shopping-cart secondary" style="font-size: 20px;"></i>
-                                    @if(session('cart_count', 0) > 0)
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            {{ session('cart_count') }}
-                                        </span>
-                                    @endif
-                                </a>
+                            <a href="{{ route('frontend-cart.index') }}" class="btn-icon position-relative">
+                                <i class="fas fa-shopping-cart secondary" style="font-size: 20px;"></i>
+                                @if(session('cart_count', 0) > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ session('cart_count') }}
+                                </span>
+                                @endif
+                            </a>
                             @else
-                                <a href="#" class="btn-icon position-relative" onclick="handleLoginAlert(event)">
-                                    <i class="fas fa-shopping-cart secondary" style="font-size: 20px;"></i>
-                                </a>
+                            <a href="#" class="btn-icon position-relative" onclick="handleLoginAlert(event)">
+                                <i class="fas fa-shopping-cart secondary" style="font-size: 20px;"></i>
+                            </a>
                             @endif
 
-                        {{-- AVATAR / LOGIN --}}
-                        <div class="user-auth d-flex align-items-center justify-content-end ms-3 flex-shrink-0" style="min-width: auto;">
-                            @if(auth()->check())
-<div class="dropdown position-relative">
-    <a href="#" class="dropdown-toggle d-flex align-items-center p-0 bg-transparent border-0"
-        id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-        @if(Auth::user()->user_img && file_exists(public_path('storage/' . Auth::user()->user_img)))
-            <img src="{{ asset('storage/' . Auth::user()->user_img) }}"
-                alt="Profile" width="35" height="35"
-                class="rounded-circle" style="object-fit: cover;">
-        @else
-            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
-                style="width: 35px; height: 35px; font-size: 16px; font-weight: bold;">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-            </div>
-        @endif
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end mt-2 shadow-sm"
-        aria-labelledby="dropdownUser"
-        style="min-width: 130px; max-width: 10px; z-index: 999;">
-        <li><a class="dropdown-item" href="{{ route('user.profile.show') }}">{{ Translator::translate('Profil', $locale, 'id') }}</a></li>
-        <li><a class="dropdown-item" href="{{ route('frontend-orders.index') }}">{{ Translator::translate('Pesanan', $locale, 'id') }}</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="dropdown-item text-danger">{{ Translator::translate('Logout', $locale, 'id') }}</button>
-            </form>
-        </li>
-    </ul>
-</div>
+                            {{-- AVATAR / LOGIN --}}
+                            <div class="user-auth d-flex align-items-center justify-content-end ms-3 flex-shrink-0" style="min-width: auto;">
+                                @if(auth()->check())
+                                <div class="dropdown position-relative">
+                                    <a href="#" class="dropdown-toggle d-flex align-items-center p-0 bg-transparent border-0"
+                                        id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                                        @if(Auth::user()->user_img && file_exists(public_path('storage/' . Auth::user()->user_img)))
+                                        <img src="{{ asset('storage/' . Auth::user()->user_img) }}"
+                                            alt="Profile" width="35" height="35"
+                                            class="rounded-circle" style="object-fit: cover;">
+                                        @else
+                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                                            style="width: 35px; height: 35px; font-size: 16px; font-weight: bold;">
+                                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        </div>
+                                        @endif
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end mt-2 shadow-sm"
+                                        aria-labelledby="dropdownUser"
+                                        style="min-width: 130px; max-width: 10px; z-index: 999;">
+                                        <li><a class="dropdown-item" href="{{ route('user.profile.show') }}">{{ Translator::translate('Profil', $locale, 'id') }}</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('frontend-orders.index') }}">{{ Translator::translate('Pesanan', $locale, 'id') }}</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item text-danger">{{ Translator::translate('Logout', $locale, 'id') }}</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
 
-                            @else
-                            <a href="{{ route('login') }}"
-                            style="
+                                @else
+                                <a href="{{ route('login') }}"
+                                    style="
                                     display: inline-block;
                                     padding: 6px 14px;
                                     font-size: 15px;
@@ -169,21 +172,21 @@
                                     background-color: transparent;
                                     transition: background-color 0.3s, color 0.3s;
                                 "
-                            onmouseover="this.style.backgroundColor='#384c34'; this.style.color='#859f81';"
-                            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#fff';">
-                                LOGIN
-                            </a>
-                            @endif
-                        </div>
+                                    onmouseover="this.style.backgroundColor='#384c34'; this.style.color='#859f81';"
+                                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#fff';">
+                                    LOGIN
+                                </a>
+                                @endif
+                            </div>
 
-                        <div id="btn-extra">
-                                    <span></span>
-                                    <span></span>
-                                </div>
+                            <div id="btn-extra">
+                                <span></span>
+                                <span></span>
+                            </div>
 
                             {{-- Language switcher --}}
                             @php $locale = app()->getLocale(); @endphp
-                           <div class="language-switcher d-none d-lg-flex align-items-center gap-1 ms-3">
+                            <div class="language-switcher d-none d-lg-flex align-items-center gap-1 ms-3">
                                 <a href="{{ route('set.locale', 'id') }}" class="btn-sm {{ $locale == 'id' ? 'btn-primary' : 'btn-outline-secondary' }}">🇮🇩 ID</a>
                                 <a href="{{ route('set.locale', 'en') }}" class="btn-sm {{ $locale == 'en' ? 'btn-primary' : 'btn-outline-secondary' }}">🇺🇸 EN</a>
                             </div>
