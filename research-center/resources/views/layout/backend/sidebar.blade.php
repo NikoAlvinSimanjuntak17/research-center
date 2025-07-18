@@ -306,19 +306,19 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         <ul
                             class="nav-group-sub collapse {{ Request::is('researcher/projects*', 'researcher/projects/collaborators*', 'researcher/join-projects*') ? 'show' : '' }}">
                             <li class="nav-item">
-                                <a href="{{ route('researcher.projects.index') }}"
+                                <a href="#"
                                     class="nav-link {{ Request::is('researcher/projects') || (Request::is('researcher/projects/*') && !Request::is('researcher/projects/collaborators*')) ? 'active' : '' }}">
                                     Daftar Proyek
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('researcher.projects.collaborators.index') }}"
+                                <a href="#"
                                     class="nav-link {{ Request::is('researcher/projects/collaborators*') ? 'active' : '' }}">
                                     Daftar Kolaborator
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('researcher.projects.join.index') }}"
+                                <a href="#"
                                     class="nav-link {{ Request::is('researcher/join-projects*') ? 'active' : '' }}">
                                     Gabung Proyek
                                 </a>
@@ -326,7 +326,7 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="{{route('dataset.index')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-flask"></i>
                             <span>Dataset</span>
                         </a>
