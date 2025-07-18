@@ -34,7 +34,7 @@ class AdminResearcherController extends Controller
         $researcher->delete();
         $user->delete();
 
-        return redirect()->route('penelitian.researcher.index')->with('success', 'Peneliti berhasil dihapus.');
+        return redirect()->route('researcher.index')->with('success', 'Peneliti berhasil dihapus.');
     }
 
     public function create()
