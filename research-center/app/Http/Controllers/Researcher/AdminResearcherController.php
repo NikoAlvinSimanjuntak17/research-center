@@ -31,11 +31,16 @@ class AdminResearcherController extends Controller
         $researcher = Researcher::findOrFail($id);
         $user = $researcher->user;
 
+        // Hapus semua data terkait terlebih dahulu
+        $researcher->researchDatas()->delete();
+
+        // Lalu hapus peneliti dan user-nya
         $researcher->delete();
         $user->delete();
 
         return redirect()->route('researcher.index')->with('success', 'Peneliti berhasil dihapus.');
     }
+
 
     public function create()
     {
