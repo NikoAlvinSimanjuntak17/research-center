@@ -22,7 +22,7 @@
                         <li class="active">{{ Translator::translate('Galeri', $locale, 'id') }}</li>
 
                     </ul>
-                    <h1 class="text-uppercase">{{ Translator::translate('Galeru', $locale, 'id') }}</h1>
+                    <h1 class="text-uppercase">{{ Translator::translate('Galeri', $locale, 'id') }}</h1>
                     <p class="col-lg-10 lead">{{ Translator::translate('Temukan berbagai galeri penelitian kami yang inovasi dan terpecaya.', $locale, 'id') }}</p>
                 </div>
             </div>
