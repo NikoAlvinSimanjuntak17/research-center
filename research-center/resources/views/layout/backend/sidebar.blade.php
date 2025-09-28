@@ -126,7 +126,7 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                     </li>
                                         <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.orders.index') ? 'active' : '' }}"
-                            href="#">
+                            href="{{ route('admin.orders.index') }}">
                             <i class="ph-newspaper"></i>
                             <span>Semua Pesanan</span>
                         </a>
@@ -164,26 +164,26 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="{{route('dataset.index')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-flask"></i>
                             <span>Dataset</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="{{route('coupon.index')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-tag"></i>
                             <span>Kupon</span>
                         </a>
            
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="{{route('event.index')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-calendar-blank"></i>
                             <span>Events</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="{{route('event.verified')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-newspaper"></i>
                             <span>Sertifikat</span>
                         </a>
@@ -199,13 +199,13 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         <ul
                             class="nav-group-sub collapse {{ Request::is('admin/projects*', 'admin/collaborators*') ? 'show' : '' }}">
                             <li class="nav-item">
-                                <a href="#"
+                                <a href="{{ route('admin.projects.index') }}"
                                     class="nav-link {{ Request::is('admin/projects*') && !Request::is('admin/projects/collaborators*') ? 'active' : '' }}">
                                     Proyek
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#"
+                                <a href="{{ route('admin.collaborators.index') }}"
                                     class="nav-link {{ Request::is('admin/collaborators*') ? 'active' : '' }}">
                                     Kolaborator
                                 </a>
@@ -306,19 +306,19 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         <ul
                             class="nav-group-sub collapse {{ Request::is('researcher/projects*', 'researcher/projects/collaborators*', 'researcher/join-projects*') ? 'show' : '' }}">
                             <li class="nav-item">
-                                <a href="#"
+                                <a href="{{ route('researcher.projects.index') }}"
                                     class="nav-link {{ Request::is('researcher/projects') || (Request::is('researcher/projects/*') && !Request::is('researcher/projects/collaborators*')) ? 'active' : '' }}">
                                     Daftar Proyek
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#"
+                                <a href="{{ route('researcher.projects.collaborators.index') }}"
                                     class="nav-link {{ Request::is('researcher/projects/collaborators*') ? 'active' : '' }}">
                                     Daftar Kolaborator
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#"
+                                <a href="{{ route('researcher.projects.join.index') }}"
                                     class="nav-link {{ Request::is('researcher/join-projects*') ? 'active' : '' }}">
                                     Gabung Proyek
                                 </a>
@@ -326,7 +326,7 @@ $role_user = DB::table('role_user')->where('user_id', $user->id)->first();
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
+                        <a href="{{route('dataset.index')}}" class="nav-link {{ $activePage == '#' ? ' active' : '' }}">
                             <i class="ph-flask"></i>
                             <span>Dataset</span>
                         </a>
