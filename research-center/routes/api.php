@@ -31,8 +31,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/preview/{filename}', [DatasetApiController::class, 'preview']);
 
-Route::post('/post-login', [AuthApiController::class, 'postLogin'])->name('post-login');
-Route::post('/post-registration', [AuthApiController::class, 'postRegistration'])->name('post-registration');
+// Route::post('/post-login', [AuthApiController::class, 'postLogin'])->name('post-login');
+// Route::post('/post-registration', [AuthApiController::class, 'postRegistration'])->name('post-registration');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/post-logout', [AuthApiController::class, 'logout'])->name('logout');
