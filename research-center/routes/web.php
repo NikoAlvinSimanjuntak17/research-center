@@ -86,7 +86,7 @@ Route::post('/admin/notifications/mark-as-read', [AdminController::class, 'markN
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
-    })->name('dashboard');
+    })->name('user.dashboard');
 });
 
 // Admin Area
