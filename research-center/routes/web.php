@@ -78,7 +78,7 @@ Route::post('/post-login', [AuthController::class, 'postLogin'])->name('post-log
 Route::get('/registration', [AuthController::class, 'registration'])->name('register');
 Route::post('/post-registration', [AuthController::class, 'postRegistration'])->name('post-registration');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::post('/post-logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/post-logout', [AuthController::class, 'logout'])->name('post-logout');
 Route::post('/midtrans/callback', [CheckoutController::class, 'handleMidtransNotification']);
 Route::post('/admin/notifications/mark-as-read', [AdminController::class, 'markNotificationsAsRead'])->name('admin.notifications.markAsRead');
 
